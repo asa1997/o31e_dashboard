@@ -2,9 +2,9 @@
 
 ## Requirements
 
-- [MkDocs](https://www.mkdocs.org/)
 - Python 3.x
 - Pip
+- [MkDocs](https://www.mkdocs.org/)
 - [MkDocs material theme](https://squidfunk.github.io/mkdocs-material/getting-started/)
 
 ## Starting server
