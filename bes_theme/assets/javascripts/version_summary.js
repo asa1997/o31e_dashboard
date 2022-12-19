@@ -3,7 +3,12 @@ function fetch_json(button_id, button_name, project_name)
 {
   var ossp_name = project_name.toLowerCase();
   console.log(ossp_name);
-  fetch('https://github.com/Be-Secure/besecure-assessment-datastore/blob/main/'+ ossp_name + '/' + button_id + '/' + button_name + '/' + ossp_name+ '-' + button_id + '-' + button_name + '-report.json')
+  fetch('https://raw.githubusercontent.com/Be-Secure/besecure-assessment-datastore/main/'+ ossp_name + '/' + button_id + '/' + button_name + '/' + ossp_name+ '-' + button_id + '-' + button_name + '-report.json', {
+    method: 'GET',
+    headers: {
+        'Accept': 'application/json',
+    },
+})
   .then(function (response) {
     return response.json();
   })
