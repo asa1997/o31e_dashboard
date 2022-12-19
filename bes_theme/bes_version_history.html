@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version Summary</title>
+    <link href="{{base_url}}/assets/stylesheets/bessearch.foamtree.util.loading.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <script language="JavaScript" type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <!-- <script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script> -->
+    <script src="{{base_url}}/assets/javascripts/version_summary.js"></script>
+    <style>
+        .version_div {
+
+            border-collapse: collapse;
+          padding: 0px 0px 0px 0px;
+          font-size: 15px;
+          font-family: Arial,Helvetica;
+          margin: 50px 50px 50px 70px;
+          border: 2px solid #ccc;
+          float: left;
+          height: 180px;
+          white-space: nowrap;
+      
+          }
+        .cve_table table {
+            table-layout:fixed;
+            width:100%;
+        }
+        .cve_table td, .cve_table th {
+
+            border: 1px solid #ddd;
+            
+            padding: 8px;
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            word-wrap: break-word;
+            
+            }
+            
+            
+            
+            .cve_table tr:nth-child(even){background-color: #f2f2f2;}
+            
+            
+            
+            
+            .cve_table tr:hover {background-color: #ddd;}
+            
+            
+            .cve_table th {
+            
+            padding-top: 12px;
+            
+            padding-bottom: 12px;
+            
+            text-align: left;
+            
+            background-color: #526cfe;
+            
+            color: white;
+            
+            }
+            
+    </style>
+</head>
+<body>
+    <div class="version_div" id="version_details">
+
+    </div>
+    <script>
+        window.onload = load_version_data();
+    </script>
+</body>
+
+
+</html>
