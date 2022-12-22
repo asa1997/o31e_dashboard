@@ -470,6 +470,7 @@ color: white;
       CVE count : <%- cvedetails.count %> 
       </br>
       Year : <%- cvedetails.year %>
+      <%- scorecard %>
       </div>
 
       <button id="cve_button" onmouseover="enabledisable(<%- cvedetails.count %>)" onclick="load_data(<%- id %>,'<%- name %>')">Learn more</button>
@@ -1030,7 +1031,7 @@ color: white;
         foamtreeLoader.started();
 
         JSONP.load("{{base_url}}/assets/data/OSSP-master.js", "modelDataAvailable", setDataObject);
-
+        JSONP.load("{{base_url}}/assets/data/version_details/72-WordPress-Versiondetails.js", "VersionData", setVersionDataObject);
         /**
          * Initializes the search form.
          */
@@ -1165,7 +1166,74 @@ color: white;
             $details.toggleClass("showing", false);
           }
         }
+        function setVersionDataObject(github) {
+          // var weightProperty = $("input[name='weighting']:checked").val();
 
+          // Once the data loaded, hide the loading indicator and set the data.
+          foamtreeLoader.complete(
+            // If there are results, convert them to FoamTree format
+            github.version_items && github.version_items.length ?
+              {
+                groups: github.version_items.map(function (version_item, index) {
+                  // Sometimes home pages come without the http:// prefix
+                  
+                  version_item.scorecard = "Scorecard:" + version_item.scorecard;
+                  // Create the FoamTree group object for this version_item
+                  var version_groups = {
+                    // Keep a reference to the original version_item, we'll use it in our custom drawing code
+                    version_item: version_item,
+
+                    // If the full name is long, insert zero-width spaces after / and -
+                    // so that the text layout engine can break lines if needed
+
+                    // Set the weight based on the the radio button selection
+                    weight: version_item[weightProperty]
+                  };
+
+                  // Initiate loading of the avatar image
+                  var img = new Image();
+                  img.onload = function () {
+                    // Once the image has been loaded,
+                    // put it in the version_groups's data object
+                    version_groups.image = img;
+
+                    // If we're on mobile, we're redrawing only
+                    // when an image loads, so schedule a redraw.
+                    if (isMobile) {
+                      foamtree.redraw(true, version_groups);
+                    }
+                  };
+
+                  // Defer the actual loading of images a bit, so that the browser is not overwhelmed
+                  // by starting tens of downloads at the same time.
+        
+
+                  return version_groups;
+                })
+              }
+              :
+
+              // The query returned no results
+              github.version_items && github.version_items.length === 0 ?
+                {
+                  noResults: true,
+                  groups: [
+                    { label: "No results match your search", weight: 3 },
+                    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {} // some extra empty groups
+                  ]
+                }
+                :
+
+                // The search limit has been exceeded
+                {
+                  noResults: true,
+                  groups: [
+                    { label: github.message.substring(0, github.message.indexOf(" (")), weight: 3 },
+                    {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
+                  ]
+                }
+          );
+        }
         /**
          * Converts the GitHub search API results to a FoamTree data object.
          */
@@ -1187,7 +1255,7 @@ color: white;
                   item.created_at_time = new Date(item.created_at).getTime();
                   item.updated_at_time = new Date(item.updated_at).getTime();
                   item.pushed_at_time = new Date(item.pushed_at).getTime();
-
+                  item.scorecard = "Scorecard:" + item.scorecard;
                   // Create the FoamTree group object for this item
                   var group = {
                     // Keep a reference to the original item, we'll use it in our custom drawing code

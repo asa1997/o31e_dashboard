@@ -1,23 +1,10 @@
 
-function fetch_json(button_id, button_name, project_name)
+function open_report(version, report, project_name)
 {
-  var ossp_name = project_name.toLowerCase();
-  console.log(ossp_name);
-  fetch('https://raw.githubusercontent.com/Be-Secure/besecure-assessment-datastore/main/'+ ossp_name + '/' + button_id + '/' + button_name + '/' + ossp_name+ '-' + button_id + '-' + button_name + '-report.json', {
-    method: 'GET',
-    headers: {
-        'Accept': 'application/json',
-    },
-})
-  .then(function (response) {
-    return response.json();
-  })
-  .then(function (data) {
-    console.log(data);
-  })
-  .catch(function (err) {
-    console.dir(err);
-  });
+  localStorage["version"] = version;
+  localStorage["report"] = report;
+  localStorage["ossp_name"] = project_name;
+  window.open("../../bes_assessment_reports", "_self");
 }
 
 function load_version_data()
@@ -28,7 +15,7 @@ function load_version_data()
     ossp_name = localStorage["name"];
     console.log("name:"+ossp_name);
 
-  fetch('../assets/data/version_details/72-Wordpress-Versiondetails.json')
+  fetch('../assets/data/version_details/'+id+'-'+ossp_name+'-Versiondetails.js')
   .then(function (response) {
     return response.json();
   })
@@ -37,9 +24,13 @@ function load_version_data()
     console.log(data);
     console.log("length:"+data.length);
     console.log("version:"+data[0].version);
-    
+    document.getElementById("heading1").innerHTML = "Version Details - " + ossp_name;
     for (let i = 0; i<Object.keys(data).length; i++)
     {
+      
+      const version_table = document.createElement("TABLE");
+      version_table.setAttribute("id", "version_table"+i);
+      // let table = "<table id=version_table"+i+">";
       
       const version = document.createElement("p");
       const release_date = document.createElement("p");
@@ -49,7 +40,7 @@ function load_version_data()
       const button = document.createElement("BUTTON") 
       
       cve_table.setAttribute("id", "cve_table"+i) // Setting id for each cve table. i is the loop var so each table would have different ids. Hence, we can create different tables for each cve details.
-      
+      cve_table.setAttribute("class", "cve_table_class")
       
       const version_data = document.createTextNode("Version:"+data[i].version);
       const release_date_data = document.createTextNode("Release date:"+data[i].release_date);
@@ -70,10 +61,16 @@ function load_version_data()
       
       const element = document.getElementById("version_details");
       
-      element.appendChild(version);
-      element.appendChild(release_date);      
-      element.appendChild(criticality);      
-      element.appendChild(scorecard);
+      // element.appendChild(version);
+      // element.appendChild(release_date);      
+      // element.appendChild(criticality);      
+      // element.appendChild(scorecard);
+      element.appendChild(version_table);
+      let table = "<tr><td><h3>Version : " + data[i].version + "</h3></td></tr>"
+      table += "<tr><td>Release date : " + data[i].release_date + "</td></tr>"
+      table += "<tr><td>Criticality Score : " + data[i].criticality_score + "</td></tr>"
+      table += "<tr><td>Scorecard : " + data[i].scorecard + "</td></tr>"
+      document.getElementById("version_table"+i).innerHTML = table;
       element.appendChild(cve_table);
       element.appendChild(button);
       
@@ -85,15 +82,15 @@ function load_version_data()
       const buttonPressed = e => {
         console.log(e.target.id);  // Get ID of Clicked Element
         console.log(e.target.name);
-        var button_id = e.target.id;
-        var button_name = e.target.name;
-        fetch_json(button_id, button_name, localStorage["name"]);
+        var version = e.target.id;
+        var report = e.target.name;
+        open_report(version, report, localStorage["name"]);
       }
 
       for (let b of buttons) {
         b.addEventListener("click", buttonPressed);
       } 
-    
+      
     }
   
   })
